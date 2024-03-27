@@ -1,2 +1,2 @@
 # alx-backend-storage
-SQL is love
+SQL is love NoSQL is messy
