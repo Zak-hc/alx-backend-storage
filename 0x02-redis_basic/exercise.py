@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import redis
 import uuid
-from typing import Union
+from typing import Union, Callable
 
 
 class Cache:
@@ -13,10 +13,21 @@ class Cache:
         """Définir une paire clé-valeur dans le cache."""
         self._redis.set(key, value)
 
-    def get(self, key):
+    def get(self, key, fn: Callable = None):
         """Obtenir la valeur associée à une clé depuis le cache."""
-        return self._redis.get(key)
+        value = self._redis.get(key)
+        if value is not None and fn is not None:
+            value = fn(value)
+        return value
 
+    def get_str(self, key: str) -> str:
+        """Obtenir la valeur associée à une clé depuis le cache obdlha l strg."""
+        return self.get(key, lambda x: x.decode('utf-8'))
+
+    def get_int(self, key: str) -> int:
+        """Obtenir la valeur associée à une clé depuis le cache obdlha lint."""
+        return self.get(key, int)
+    
     def delete(self, key):
         """Supprimer une paire clé-valeur du cache."""
         self._redis.delete(key)
